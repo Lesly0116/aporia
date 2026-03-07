@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aporia - Inscription</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(145deg, #87CEEB 0%, #B0E0E6 50%, #FFFFFF 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            top: -100px;
+            right: -100px;
+            z-index: 0;
+        }
+        
+        body::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: rgba(135, 206, 235, 0.1);
+            border-radius: 50%;
+            bottom: -150px;
+            left: -150px;
+            z-index: 0;
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            box-shadow: 0 25px 50px -12px rgba(135, 206, 235, 0.3);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px;
+            position: relative;
+            z-index: 10;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .logo {
+            text-align: center;
+            font-size: 3em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #87CEEB, #5F9EA0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        
+        h2 {
+            text-align: center;
+            color: #2D3748;
+            margin-bottom: 30px;
+            font-size: 1.8em;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: slideIn 0.3s ease;
+            font-weight: 500;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+        
+        .alert-success {
+            background: #C6F6D5;
+            color: #22543D;
+            border: 1px solid #9AE6B4;
+        }
+        
+        .alert-error {
+            background: #FED7D7;
+            color: #742A2A;
+            border: 1px solid #FC8181;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4A5568;
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+        
+        input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #E2E8F0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #87CEEB;
+            box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.2);
+        }
+        
+        input::placeholder {
+            color: #A0AEC0;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 14px;
+            background: #87CEEB;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .btn:hover {
+            background: #5F9EA0;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(95, 158, 160, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .password-requirements {
+            font-size: 0.85em;
+            color: #718096;
+            margin-top: 5px;
+            padding-left: 5px;
+        }
+        
+        .links {
+            text-align: center;
+            margin-top: 25px;
+            color: #718096;
+        }
+        
+        .links a {
+            color: #87CEEB;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s ease;
+        }
+        
+        .links a:hover {
+            color: #5F9EA0;
+            text-decoration: underline;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #A0AEC0;
+            font-size: 0.85em;
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            .logo {
+                font-size: 2.5em;
+            }
+            
+            h2 {
+                font-size: 1.5em;
+            }
+            
+            input {
+                padding: 10px 12px;
+            }
+            
+            .btn {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">APORIA</div>
+        <div class="subtitle">Testez vos connaissances</div>
+        
+        <h2>Inscription</h2>
+        
+        <div th:if="${erreur != null}" class="alert alert-error" th:text="${erreur}"></div>
+        
+        <form action="#" th:action="@{/inscriptionApo}" method="post">
+            <div class="form-group">
+                <label for="email"> Email</label>
+                <input type="email" 
+                       id="email" 
+                       name="email" 
+                       required 
+                       placeholder="votre@email.com"
+                       th:value="${email}"/>
+            </div>
+            
+            <div class="form-group">
+                <label for="password"> Mot de passe</label>
+                <input type="password" 
+                       id="password" 
+                       name="password" 
+                       required 
+                       placeholder="••••••••"
+                       minlength="6"/>
+                <div class="password-requirements">
+                      Minimum 6 caractères
+                </div>
+            </div>
+            
+            <button type="submit" class="btn">
+                 S'inscrire
+            </button>
+        </form>
+        
+        <div class="links">
+            Déjà un compte ? 
+            <a href="/loginAporian">Se connecter</a>
+        </div>
+        
+        <div class="footer">
+            &copy; 2026 Aporia - Tous droits réservés
+        </div>
+    </div>
+</body>
+</html>

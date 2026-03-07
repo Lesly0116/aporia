@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aporia - Mon Historique</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(145deg, #87CEEB 0%, #B0E0E6 50%, #FFFFFF 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(135, 206, 235, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .logo {
+            font-size: 2em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #87CEEB, #5F9EA0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .user-email {
+            color: #4A5568;
+            font-weight: 500;
+            background: #F7FAFC;
+            padding: 8px 15px;
+            border-radius: 25px;
+            border: 1px solid #E2E8F0;
+        }
+        
+        .logout {
+            color: #87CEEB;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .logout:hover {
+            background: #87CEEB;
+            color: white;
+        }
+        
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .filtres-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 30px rgba(135, 206, 235, 0.1);
+        }
+        
+        .filtres-form {
+            display: flex;
+            gap: 20px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+        
+        .form-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4A5568;
+            font-weight: 600;
+        }
+        
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #E2E8F0;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            background: white;
+            transition: all 0.3s ease;
+            color: #2D3748;
+        }
+        
+        select:focus {
+            border-color: #87CEEB;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.2);
+        }
+        
+        .btn-filtre {
+            padding: 12px 30px;
+            background: #87CEEB;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            min-width: 120px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            text-align: center;
+            display: inline-block;
+        }
+        
+        .btn-filtre:hover {
+            background: #5F9EA0;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(95, 158, 160, 0.3);
+        }
+        
+        .btn-reset {
+            background: #A0AEC0;
+        }
+        
+        .btn-reset:hover {
+            background: #718096;
+        }
+        
+        .historique-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 10px 30px rgba(135, 206, 235, 0.1);
+        }
+        
+        h2 {
+            color: #2D3748;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        
+        .filtre-info {
+            background: #87CEEB;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .badge-filtre {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 5px 15px;
+            border-radius: 25px;
+            font-size: 0.95em;
+            font-weight: 500;
+            backdrop-filter: blur(5px);
+        }
+        
+        .table-responsive {
+            overflow-x: auto;
+            margin: 20px 0;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+        
+        th {
+            text-align: left;
+            padding: 15px 10px;
+            background: #F7FAFC;
+            color: #4A5568;
+            font-weight: 600;
+            border-bottom: 2px solid #87CEEB;
+        }
+        
+        td {
+            padding: 15px 10px;
+            border-bottom: 1px solid #E2E8F0;
+            color: #2D3748;
+        }
+        
+        tr:hover td {
+            background: #F7FAFC;
+        }
+        
+        .score {
+            font-weight: 700;
+            color: #87CEEB;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 50px;
+            color: #718096;
+        }
+        
+        .empty-state p {
+            margin: 10px 0;
+        }
+        
+        .empty-state a {
+            color: #87CEEB;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            padding: 10px 20px;
+            background: #F7FAFC;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+        
+        .empty-state a:hover {
+            background: #87CEEB;
+            color: white;
+        }
+        
+        .actions {
+            margin-top: 20px;
+            text-align: right;
+        }
+        
+        .btn-retour {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #A0AEC0;
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-retour:hover {
+            background: #718096;
+            transform: translateX(-5px);
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .filtres-form {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .form-group {
+                min-width: 100%;
+            }
+            
+            .btn-filtre {
+                width: 100%;
+            }
+            
+            h2 {
+                font-size: 1.5em;
+            }
+            
+            .filtre-info {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Contenu identique -->
+    <div class="header">
+        <div class="logo">APORIA</div>
+        <div class="user-info">
+                <span class="user-email" th:text="|👤 ${session.utilisateurConnecte.email}|"></span>
+                <a href="/logout" class="logout">Déconnexion</a>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <div class="filtres-card">
+            <h2>Filtrer l'historique</h2>
+            <form class="filtres-form" th:action="@{/historique}" method="get">
+                <div class="form-group">
+                    <label>Catégorie</label>
+                    <select name="categorieId">
+                        <option value="">Toutes les catégories</option>
+                        <option th:each="cat : ${categories}" 
+                                th:value="${cat.id}"
+                                th:text="${cat.nom}"
+                                th:selected="${cat.id == categorieChoisie}">
+                        </option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Niveau</label>
+                    <select name="niveauId">
+                        <option value="">Tous les niveaux</option>
+                        <option th:each="niv : ${niveaux}" 
+                                th:value="${niv.id}"
+                                th:text="${niv.nom}"
+                                th:selected="${niv.id == niveauChoisi}">
+                        </option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn-filtre">Filtrer</button>
+                <a href="/historique" class="btn-filtre btn-reset">Réinitialiser</a>
+            </form>
+        </div>
+        
+        <div class="historique-card">
+            <h2>Mon historique</h2>
+            
+            <div class="filtre-info" th:if="${filtreActif}">
+                <span class="filtre-label">Filtre actif :</span>
+                <span class="badge-filtre" 
+                      th:text="${categorieChoisieObjet != null ? categorieChoisieObjet.nom : 'Catégorie inconnue'}">
+                    Catégorie
+                </span>
+                <span class="badge-filtre" 
+                      th:text="${niveauChoisiObjet != null ? niveauChoisiObjet.nom : 'Niveau inconnu'}">
+                    Niveau
+                </span>
+            </div>
+            
+            <div class="table-responsive">
+                <div th:if="${filtreActif and historiqueFiltre != null and historiqueFiltre.present}">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Catégorie</th>
+                                <th>Niveau</th>
+                                <th>Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:with="h=${historiqueFiltre.get()}">
+                                <td th:text="${#dates.format(h.datePassage, 'dd/MM/yyyy')}">01/01/2026</td>
+                                <td th:text="${h.idCategorie.nom}">Maths</td>
+                                <td th:text="${h.idNiveau.nom}">Débutant</td>
+                                <td class="score" th:text="${h.score} + '%'">85%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="empty-state" th:if="${filtreActif and (historiqueFiltre == null or not historiqueFiltre.present)}">
+                    <p> Aucun résultat pour ce filtre</p>
+                    <p th:text="'Catégorie: ' + (${categorieChoisieObjet != null ? categorieChoisieObjet.nom : 'Inconnue'}) + ', Niveau: ' + (${niveauChoisiObjet != null ? niveauChoisiObjet.nom : 'Inconnu'})"></p>
+                    <a href="/selection">Faire un nouveau quiz</a>
+                </div>
+                
+                <div th:if="${not filtreActif}">
+                    <div th:if="${historiqueList.isEmpty()}" class="empty-state">
+                        <p> Aucun historique pour le moment</p>
+                        <p>Commence par faire ton premier quiz !</p>
+                        <a href="/selection">Commencer un quiz</a>
+                    </div>
+                    
+                    <table th:unless="${historiqueList.isEmpty()}">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Catégorie</th>
+                                <th>Niveau</th>
+                                <th>Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="h : ${historiqueList}">
+                                <td th:text="${#dates.format(h.datePassage, 'dd/MM/yyyy')}">01/01/2026</td>
+                                <td th:text="${h.idCategorie.nom}">Maths</td>
+                                <td th:text="${h.idNiveau.nom}">Débutant</td>
+                                <td class="score" th:text="${h.score} + '%'">85%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="actions" th:if="${filtreActif}">
+                <a href="/historique" class="btn-retour">← Voir tout l'historique</a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

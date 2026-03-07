@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aporia - Résultats</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(145deg, #87CEEB 0%, #B0E0E6 50%, #FFFFFF 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 20px 30px;
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(135, 206, 235, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .logo {
+            font-size: 2em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #87CEEB, #5F9EA0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .user-email {
+            color: #4A5568;
+            font-weight: 500;
+            background: #F7FAFC;
+            padding: 8px 15px;
+            border-radius: 25px;
+            border: 1px solid #E2E8F0;
+        }
+        
+        .logout {
+            color: #87CEEB;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .logout:hover {
+            background: #87CEEB;
+            color: white;
+        }
+        
+        .resultats-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .score-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(135, 206, 235, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .score-title {
+            font-size: 2em;
+            color: #2D3748;
+            margin-bottom: 20px;
+        }
+        
+        .score-circle {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            position: relative;
+        }
+        
+        .score-circle svg {
+            width: 100%;
+            height: 100%;
+            transform: rotate(-90deg);
+        }
+        
+        .score-circle circle {
+            fill: none;
+            stroke-width: 8;
+            stroke-linecap: round;
+        }
+        
+        .score-circle .bg-circle {
+            stroke: #E2E8F0;
+        }
+        
+        .score-circle .progress-circle {
+            stroke: #87CEEB;
+            stroke-dasharray: 565.48;
+            stroke-dashoffset: calc(565.48 - (565.48 * var(--pourcentage)) / 100);
+            transition: stroke-dashoffset 1s ease;
+        }
+        
+        .score-percentage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 3em;
+            font-weight: 700;
+            color: #87CEEB;
+        }
+        
+        .score-details {
+            font-size: 1.2em;
+            color: #4A5568;
+            margin: 20px 0;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: 600;
+            margin: 5px;
+        }
+        
+        .badge-categorie {
+            background: #87CEEB;
+            color: white;
+        }
+        
+        .message {
+            font-size: 1.3em;
+            margin: 20px 0;
+            padding: 15px;
+            border-radius: 15px;
+            font-weight: 500;
+        }
+        
+        .message.excellent {
+            background: #C6F6D5;
+            color: #22543D;
+        }
+        
+        .message.bien {
+            background: #BEE3F8;
+            color: #1E3A8A;
+        }
+        
+        .message.moyen {
+            background: #FEEBC8;
+            color: #744210;
+        }
+        
+        .message.revoir {
+            background: #FED7D7;
+            color: #742A2A;
+        }
+        
+        .details-title {
+            font-size: 1.5em;
+            color: #2D3748;
+            margin: 30px 0 20px;
+        }
+        
+        .details-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .question-detail {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            border-left: 5px solid;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .question-detail:hover {
+            transform: translateX(5px);
+        }
+        
+        .question-detail.correcte {
+            border-left-color: #48BB78;
+        }
+        
+        .question-detail.incorrecte {
+            border-left-color: #F56565;
+        }
+        
+        .question-text {
+            font-weight: 600;
+            color: #2D3748;
+            margin-bottom: 10px;
+        }
+        
+        .reponse-info {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            color: #4A5568;
+        }
+        
+        .reponse-donnee {
+            background: #F7FAFC;
+            padding: 5px 12px;
+            border-radius: 8px;
+            border: 1px solid #E2E8F0;
+        }
+        
+        .bonne-reponse {
+            background: #C6F6D5;
+            padding: 5px 12px;
+            border-radius: 8px;
+            color: #22543D;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            background: #87CEEB;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            min-width: 200px;
+            text-align: center;
+        }
+        
+        .btn:hover {
+            background: #5F9EA0;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(95, 158, 160, 0.3);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: #87CEEB;
+            border: 2px solid #87CEEB;
+        }
+        
+        .btn-secondary:hover {
+            background: #F7FAFC;
+            color: #5F9EA0;
+            border-color: #5F9EA0;
+        }
+        
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .score-card {
+                padding: 30px 20px;
+            }
+            
+            .score-title {
+                font-size: 1.8em;
+            }
+            
+            .score-circle {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .score-percentage {
+                font-size: 2.5em;
+            }
+            
+            .reponse-info {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .actions {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .message {
+                font-size: 1.1em;
+            }
+            
+            .details-title {
+                font-size: 1.3em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">APORIA</div>
+        <div class="user-info">
+            <span class="user-email" th:text="|👤 ${session.utilisateurConnecte.email}|"></span>
+            <a href="/logout" class="logout">Déconnexion</a>
+        </div>
+    </div>
+    
+    <div class="resultats-container">
+        <div class="score-card">
+            <h1 class="score-title">Votre score</h1>
+            
+            <div class="score-circle" th:style="'--pourcentage: ' + ${pourcentage}">
+                <svg viewBox="0 0 200 200">
+                    <circle class="bg-circle" cx="100" cy="100" r="90"></circle>
+                    <circle class="progress-circle" cx="100" cy="100" r="90"></circle>
+                </svg>
+                <div class="score-percentage" th:text="${pourcentage} + '%'">0%</div>
+            </div>
+            
+            <div class="score-details">
+                <span th:text="${score} + '/' + ${totalQuestions}"></span> bonnes réponses
+            </div>
+            
+            <div>
+                <span class="badge badge-categorie" th:text="${categorie}">Catégorie</span>
+                <span class="badge badge-categorie" th:text="${niveau}">Niveau</span>
+            </div>
+            
+            <div class="message" th:classappend="
+                ${pourcentage >= 80} ? 'excellent' : 
+                (${pourcentage >= 60} ? 'bien' : 
+                (${pourcentage >= 40} ? 'moyen' : 'revoir'))">
+                
+                <th:block th:if="${pourcentage >= 80}">
+                        Excellent travail jeune Aporian !
+                </th:block>
+                <th:block th:if="${pourcentage >= 60 and pourcentage < 80}">
+                       Bien ! Continuez !
+                </th:block>
+                <th:block th:if="${pourcentage >= 40 and pourcentage < 60}">
+                      Tu peut faire mieux .
+                </th:block>
+                <th:block th:if="${pourcentage < 40}">
+                     La pratique rend parfait.
+                </th:block>
+            </div>
+        </div>
+        
+        <h2 class="details-title">Détail des réponses</h2>
+        
+        <div class="details-list">
+            <div th:each="detail, stat : ${details}" class="question-detail" 
+                 th:classappend="${detail.correcte} ? 'correcte' : 'incorrecte'">
+                
+                <div class="question-text" th:text="'Q' + ${stat.index + 1} + '. ' + ${detail.question}">
+                    Question
+                </div>
+                
+                <div class="reponse-info">
+                    <span class="reponse-donnee" th:text="'Votre réponse : ' + ${detail.reponseDonnee}">
+                        Votre réponse
+                    </span>
+                    <span th:if="${!detail.correcte}" class="bonne-reponse" 
+                          th:text="'Bonne réponse : ' + ${detail.bonneReponse}">
+                        Bonne réponse
+                    </span>
+                    <span th:if="${detail.correcte}" style="color: #48BB78; font-weight: 600;">
+                        ✓ Correct
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="actions">
+            <a href="/selection" class="btn">Nouveau quiz</a>
+            <a href="/historique" class="btn btn-secondary">Mon historique</a>
+        </div>
+    </div>
+</body>
+</html>

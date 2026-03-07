@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aporia - Choisis ton quiz</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(145deg, #87CEEB 0%, #B0E0E6 50%, #FFFFFF 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: '';
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            top: -100px;
+            right: -100px;
+            z-index: 0;
+        }
+        
+        body::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: rgba(135, 206, 235, 0.1);
+            border-radius: 50%;
+            bottom: -150px;
+            left: -150px;
+            z-index: 0;
+        }
+        
+        .selection-container {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border-radius: 30px;
+            box-shadow: 0 25px 50px -12px rgba(135, 206, 235, 0.3);
+            width: 100%;
+            max-width: 500px;
+            padding: 40px;
+            position: relative;
+            z-index: 10;
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .logo {
+            font-size: 3em;
+            font-weight: 800;
+            text-align: center;
+            background: linear-gradient(135deg, #87CEEB, #5F9EA0);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #718096;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        
+        h2 {
+            text-align: center;
+            color: #2D3748;
+            margin-bottom: 30px;
+            font-size: 1.8em;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #4A5568;
+            font-weight: 600;
+        }
+        
+        select {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #E2E8F0;
+            border-radius: 15px;
+            font-size: 1em;
+            font-family: 'Poppins', sans-serif;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #2D3748;
+        }
+        
+        select:focus {
+            border-color: #87CEEB;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(135, 206, 235, 0.2);
+        }
+        
+        select:hover {
+            border-color: #5F9EA0;
+        }
+        
+        .btn {
+            width: 100%;
+            padding: 16px;
+            background: #87CEEB;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 20px;
+        }
+        
+        .btn:hover {
+            background: #5F9EA0;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(95, 158, 160, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(0);
+        }
+        
+        .user-info {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #E2E8F0;
+            color: #718096;
+            font-size: 0.95em;
+        }
+        
+        .user-email {
+            color: #87CEEB;
+            font-weight: 600;
+            background: #F7FAFC;
+            padding: 5px 10px;
+            border-radius: 8px;
+            display: inline-block;
+            margin-left: 5px;
+        }
+        
+        .temps-info {
+            margin-top: 10px;
+            padding: 15px;
+            background: #F7FAFC;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 500;
+            color: #4A5568;
+            border-left: 5px solid #87CEEB;
+            transition: all 0.3s ease;
+            font-size: 1.1em;
+        }
+        
+        #tempsAffiche {
+            font-weight: 700;
+            color: #87CEEB;
+            font-size: 1.2em;
+        }
+        
+        @media (max-width: 480px) {
+            .selection-container {
+                padding: 30px 20px;
+            }
+            
+            .logo {
+                font-size: 2.5em;
+            }
+            
+            h2 {
+                font-size: 1.5em;
+            }
+            
+            select {
+                padding: 12px;
+            }
+            
+            .btn {
+                padding: 14px;
+            }
+            
+            .temps-info {
+                font-size: 1em;
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="selection-container">
+        <div class="logo">APORIA</div>
+        <div class="subtitle">  Teste tes connaissances  </div>
+        
+        <h2>Prépare ton quiz</h2>
+        
+        <form th:action="@{/selection}" method="post">
+            
+            <div class="form-group">
+                <label> Choisis une catégorie</label>
+                <select name="categorieId" required>
+                    <option value="">-- Sélectionne une catégorie --</option>
+                    <option th:each="categorie : ${categories}" 
+                            th:value="${categorie.id}"
+                            th:text="${categorie.nom}">
+                        Mathématiques
+                    </option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>  Choisis un niveau</label>
+                
+                <select name="niveauId" id="niveauSelect" required>
+                    <option value="">-- Sélectionne un niveau --</option>
+                    <option th:each="niveau : ${niveaux}" 
+                            th:value="${niveau.id}"
+                            th:text="${niveau.nom}"
+                            th:data-temps="${tempsNiveaux[niveau.nom]}">
+                        Débutant
+                    </option>
+                </select>
+                
+                <div class="temps-info" id="tempsInfo">
+                        ️ Temps par question : <span id="tempsAffiche">--</span> secondes
+                </div>
+            </div>
+            
+            <button type="submit" class="btn">
+                     Commencer le quiz
+            </button>
+        </form>
+        
+        <div class="user-info" th:if="${session.utilisateurConnecte != null}">
+            Connecté en tant que : 
+            <span class="user-email" th:text="${session.utilisateurConnecte.email}">email</span>
+        </div>
+    </div>
+    
+    <script>
+        const niveauSelect = document.getElementById('niveauSelect');
+        const tempsAffiche = document.getElementById('tempsAffiche');
+        const tempsInfo = document.getElementById('tempsInfo');
+        
+        if (niveauSelect && tempsAffiche && tempsInfo) {
+            niveauSelect.addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                const temps = selectedOption.getAttribute('data-temps');
+                
+                if (temps) {
+                    tempsAffiche.textContent = temps;
+                    tempsInfo.style.backgroundColor = '#E6F7FF';
+                    tempsInfo.style.borderLeft = '5px solid #5F9EA0';
+                } else {
+                    tempsAffiche.textContent = '--';
+                    tempsInfo.style.backgroundColor = '#F7FAFC';
+                    tempsInfo.style.borderLeft = '5px solid #87CEEB';
+                }
+            });
+            
+            const btn = document.querySelector('.btn');
+            if (btn) {
+                btn.addEventListener('mouseover', function() {
+                    const selectedOption = niveauSelect.options[niveauSelect.selectedIndex];
+                    const temps = selectedOption?.getAttribute('data-temps');
+                    if (temps && niveauSelect.selectedIndex > 0) {
+                        this.innerHTML = `Prêt ? ${temps}s par question !`;
+                    }
+                });
+                
+                btn.addEventListener('mouseout', function() {
+                    this.innerHTML = 'Commencer le quiz';
+                });
+            }
+        }
+    </script>
+</body>
+</html>
