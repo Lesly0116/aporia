@@ -21,7 +21,7 @@ RUN ./mvnw dependency:go-offline -B
 COPY src src
 
 # Compiler et packager l'application
-RUN ./mvnw clean package -DskipTests
+RUN ./mvnw clean package -DskipTests -Dstart-class=com.lesly.Aporia.AporiaApplication
 
 # Étape 2 : Créer l'image d'exécution
 FROM eclipse-temurin:21-jre-jammy

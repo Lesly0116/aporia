@@ -71,7 +71,7 @@
                 
                 <configuration>
                     
-                    <mainClass>com.lesly.aporia.AporiaApplication</mainClass>
+                    <mainClass>com.lesly.Aporia.AporiaApplication</mainClass>
                     
                 </configuration>
                 
